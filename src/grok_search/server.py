@@ -210,6 +210,19 @@ async def web_search(
     return {"session_id": session_id, "content": answer, "sources_count": len(all_sources)}
 
 
+def _format_sources_text(sources: list[dict]) -> str:
+    """将 list[dict] 格式化为每行一个 [title](url) 的 markdown 链接文本。"""
+    lines = []
+    for item in sources:
+        url = item.get("url", "")
+        title = item.get("title") or url
+        # 防御性转义：title 中的 []\ 和换行（URL 不转义，LLM 直接阅读原始文本）
+        title = title.replace("\n", " ").replace("\r", " ").replace("\t", " ")
+        title = title.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+        lines.append(f"[{title}]({url})")
+    return "\n".join(lines)
+
+
 @mcp.tool(
     name="get_sources",
     description="""
@@ -217,7 +230,7 @@ async def web_search(
     Retrieve all cached sources for a previous web_search call.
     Provide the session_id returned by web_search to get the full source list.
     """,
-    meta={"version": "1.0.0", "author": "guda.studio"},
+    meta={"version": "1.1.0", "author": "guda.studio"},
 )
 async def get_sources(
     session_id: Annotated[str, "Session ID from previous web_search call."]
@@ -226,11 +239,11 @@ async def get_sources(
     if sources is None:
         return {
             "session_id": session_id,
-            "sources": [],
+            "sources": "",
             "sources_count": 0,
             "error": "session_id_not_found_or_expired",
         }
-    return {"session_id": session_id, "sources": sources, "sources_count": len(sources)}
+    return {"session_id": session_id, "sources": _format_sources_text(sources), "sources_count": len(sources)}
 
 
 async def _call_tavily_extract(url: str) -> str | None:
