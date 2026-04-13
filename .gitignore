@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+*.whl
+*.tar.gz
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Environment & secrets
+.env
+.env.*
+
+# Logs (fallback path — primary logs go to ~/.config/grok-search/logs/)
+logs/
+*.log
+
+# Runtime config (fallback path — primary config at ~/.config/grok-search/)
+.grok-search/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Type checking
+.mypy_cache/
+.pytype/
+
+# Ruff / linters
+.ruff_cache/
+
+# Claude Code
+.claude/settings.local.json
+.claude/index.json
+
+# Temp
+temp/
+tmp/
